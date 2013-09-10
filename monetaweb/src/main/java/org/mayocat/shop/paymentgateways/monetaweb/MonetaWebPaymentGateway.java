@@ -61,7 +61,6 @@ public class MonetaWebPaymentGateway implements PaymentGateway
         Preconditions.checkNotNull(configuration.getPassword());
         Preconditions.checkNotNull(configuration.getAction());
         Preconditions.checkNotNull(configuration.getLanguageId());
-        Preconditions.checkNotNull(configuration.getBaseURL());
 
         this.paymentEndpoint =
                 configuration.getEnvironment().equalsIgnoreCase(PROD_ENVIRONMENT) ? PROD_PAYMENT_ENDPOINT :
@@ -69,7 +68,6 @@ public class MonetaWebPaymentGateway implements PaymentGateway
         this.id = configuration.getId();
         this.password = configuration.getPassword();
         this.action = configuration.getAction();
-        this.baseURL = configuration.getBaseURL();
         this.languageId = configuration.getLanguageId();
     }
 

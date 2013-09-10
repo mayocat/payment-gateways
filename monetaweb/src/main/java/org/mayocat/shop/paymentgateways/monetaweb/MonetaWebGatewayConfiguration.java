@@ -17,12 +17,9 @@ public class MonetaWebGatewayConfiguration
     private String password;
 
     @NotNull
-    private String action;
+    private String action = "4";
 
     private String languageId = "FRA";
-
-    @NotNull
-    private String baseURL;
 
     public String getEnvironment()
     {
@@ -47,9 +44,5 @@ public class MonetaWebGatewayConfiguration
     public String getLanguageId()
     {
         return languageId;
-    }
-
-    public String getBaseURL() {
-        return baseURL;
     }
 }
