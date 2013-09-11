@@ -34,5 +34,11 @@
             <version>4.2.5</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.joda</groupId>
+            <artifactId>joda-money</artifactId>
+            <version>0.8</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

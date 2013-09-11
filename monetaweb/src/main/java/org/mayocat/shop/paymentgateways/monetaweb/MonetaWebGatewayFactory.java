@@ -6,6 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.yammer.dropwizard.json.ObjectMapperFactory;
+
+import org.apache.commons.lang3.StringUtils;
+import org.mayocat.accounts.model.Tenant;
+import org.mayocat.configuration.SiteSettings;
 import org.mayocat.configuration.general.FilesSettings;
 import org.mayocat.context.Execution;
 import org.mayocat.shop.payment.GatewayFactory;
@@ -44,6 +48,9 @@ public class MonetaWebGatewayFactory implements GatewayFactory
     @Inject
     private ObjectMapperFactory objectMapperFactory;
 
+    @Inject
+    private SiteSettings siteSettings;
+
     @Override
     public String getId()
     {
@@ -53,7 +60,6 @@ public class MonetaWebGatewayFactory implements GatewayFactory
     @Override
     public PaymentGateway createGateway()
     {
-
         File tenantConfigurationFile =
                 new File(filesSettings.getPermanentDirectory() + SLASH + TENANTS_DIRECTORY + SLASH
                         + this.execution.getContext().getTenant().getSlug() + SLASH + PAYMENTS_DIRECTORY + SLASH + ID +
@@ -67,7 +73,7 @@ public class MonetaWebGatewayFactory implements GatewayFactory
             MonetaWebGatewayConfiguration configuration =
                     mapper.readValue(new TreeTraversingParser(node), MonetaWebGatewayConfiguration.class);
 
-            return new MonetaWebPaymentGateway(configuration);
+            return new MonetaWebPaymentGateway(configuration, getSchemeAndDomain(execution.getContext().getTenant()));
         } catch (FileNotFoundException e) {
             logger.error("Failed to create MonetaWeb Adaptive payment gateway : configuration file not found");
             return null;
@@ -79,4 +85,16 @@ public class MonetaWebGatewayFactory implements GatewayFactory
             return null;
         }
     }
+
+    protected String getSchemeAndDomain(Tenant tenant)
+    {
+        return "http://" + getDomain(tenant);
+    }
+
+    protected String getDomain(Tenant tenant)
+    {
+        return StringUtils
+                .defaultIfBlank(tenant.getDefaultHost(), tenant.getSlug() + "." + siteSettings.getDomainName());
+    }
+
 }

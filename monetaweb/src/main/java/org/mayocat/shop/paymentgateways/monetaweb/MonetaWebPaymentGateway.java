@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.joda.money.CurrencyUnit;
 import org.mayocat.shop.payment.BaseOption;
 import org.mayocat.shop.payment.GatewayException;
 import org.mayocat.shop.payment.GatewayResponse;
@@ -40,6 +41,8 @@ public class MonetaWebPaymentGateway implements PaymentGateway
 
     private static final String PROD_PAYMENT_ENDPOINT = "https://www.monetaonline.it/monetaweb/hosted/init/http";
 
+    private static final String ACTION_AUTHORIZATION = "4";
+
     private Logger logger = LoggerFactory.getLogger(MonetaWebPaymentGateway.class);
 
     private String paymentEndpoint;
@@ -48,27 +51,24 @@ public class MonetaWebPaymentGateway implements PaymentGateway
 
     private String password;
 
-    private String action;
+    private String languageId;
 
     private String baseURL;
 
-    private String languageId;
-
-    public MonetaWebPaymentGateway(MonetaWebGatewayConfiguration configuration)
+    public MonetaWebPaymentGateway(MonetaWebGatewayConfiguration configuration, String baseURL)
     {
-        Preconditions.checkNotNull(configuration.getEnvironment());
-        Preconditions.checkNotNull(configuration.getId());
-        Preconditions.checkNotNull(configuration.getPassword());
-        Preconditions.checkNotNull(configuration.getAction());
-        Preconditions.checkNotNull(configuration.getLanguageId());
-
         this.paymentEndpoint =
                 configuration.getEnvironment().equalsIgnoreCase(PROD_ENVIRONMENT) ? PROD_PAYMENT_ENDPOINT :
                         TEST_PAYMENT_ENDPOINT;
         this.id = configuration.getId();
         this.password = configuration.getPassword();
-        this.action = configuration.getAction();
         this.languageId = configuration.getLanguageId();
+        this.baseURL = baseURL;
+
+        Preconditions.checkNotNull(id);
+        Preconditions.checkNotNull(password);
+        Preconditions.checkNotNull(languageId);
+        Preconditions.checkNotNull(baseURL);
     }
 
     @Override
@@ -84,7 +84,11 @@ public class MonetaWebPaymentGateway implements PaymentGateway
                 baseURI + PaymentResource.PATH + "/" + orderId + "/" + PaymentResource.ACKNOWLEDGEMENT_PATH + "/" +
                         MonetaWebGatewayFactory.ID;
 
-        Integer currencyCode = ((Currency) options.get(BaseOption.CURRENCY)).getNumericCode();
+        Currency currencyCode = ((Currency) options.get(BaseOption.CURRENCY));
+        CurrencyUnit currencyUnit = CurrencyUnit.of(currencyCode);
+        // NOTE:
+        /// When Mayocat minimum JDK version is 1.7, we can use Currency#getNumericCode directly
+        // and get rid of the joda money dependency
 
         PaymentOperation operation = new PaymentOperation();
         operation.setGatewayId(MonetaWebGatewayFactory.ID);
@@ -93,9 +97,9 @@ public class MonetaWebPaymentGateway implements PaymentGateway
             logger.debug("paymentEndpoint : " + paymentEndpoint);
             logger.debug("id : " + id);
             logger.debug("password : " + password);
-            logger.debug("action : " + action);
+            logger.debug("action : " + ACTION_AUTHORIZATION);
             logger.debug("amt : " + amount.setScale(2).toString());
-            logger.debug("currencyCode : " + currencyCode);
+            logger.debug("currencyCode : " + currencyUnit.getNumeric3Code());
             logger.debug("langId : " + languageId);
             logger.debug("responseUrl : " + responseUrl);
             logger.debug("errorUrl : " + errorUrl);
@@ -106,9 +110,9 @@ public class MonetaWebPaymentGateway implements PaymentGateway
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("id", id));
         nvps.add(new BasicNameValuePair("password", password));
-        nvps.add(new BasicNameValuePair("action", action));
+        nvps.add(new BasicNameValuePair("action", ACTION_AUTHORIZATION));
         nvps.add(new BasicNameValuePair("amt", amount.setScale(2).toString()));
-        nvps.add(new BasicNameValuePair("currencycode", currencyCode.toString()));
+        nvps.add(new BasicNameValuePair("currencycode", currencyUnit.getNumeric3Code()));
         nvps.add(new BasicNameValuePair("langid", languageId)); // TODO get language from option locale
         nvps.add(new BasicNameValuePair("responseurl", responseUrl));
         nvps.add(new BasicNameValuePair("errorurl", errorUrl));   // TODO
@@ -133,7 +137,7 @@ public class MonetaWebPaymentGateway implements PaymentGateway
                 if (entity != null) {
                     gatewayResponse = new GatewayResponse(true, operation);
                     String stringResponse = EntityUtils.toString(entity);
-                    logger.debug("response : "+ stringResponse);
+                    logger.debug("response : " + stringResponse);
                     if (stringResponse.contains("!ERROR!")) {
                         throw new GatewayException("Failed to get a response entity : " + stringResponse);
                     } else {
@@ -177,7 +181,7 @@ public class MonetaWebPaymentGateway implements PaymentGateway
             operation.setResult(PaymentOperation.Result.CAPTURED);
             operation.setExternalId(externalId);
             response = new GatewayResponse(true, operation);
-            response.setResponseText(baseURL);
+            response.setResponseText(baseURL + "/checkout/return");
         } else {
             operation.setResult(PaymentOperation.Result.FAILED);
             response = new GatewayResponse(false, operation);
