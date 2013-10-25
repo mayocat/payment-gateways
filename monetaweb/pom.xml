@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.mayocat.shop</groupId>
         <artifactId>payment-gateways</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.1</version>
     </parent>
     <artifactId>payment-gateway-monetaweb</artifactId>
     <packaging>jar</packaging>
