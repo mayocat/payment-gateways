@@ -25,7 +25,6 @@
         <connection>scm:git:git://github.com/mayocat/payment-gateways.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/mayocat/payment-gateways.git</developerConnection>
         <url>http://github.com/mayocat/payment-gateways</url>
-      <tag>HEAD</tag>
   </scm>
 
     <developers>
@@ -52,7 +51,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependencies versions -->
-        <mayocat.version>0.8.2</mayocat.version>
+        <mayocat.version>0.8.2.1</mayocat.version>
     </properties>
 
     <repositories>
@@ -74,34 +73,13 @@
     </repositories>
 
     <build>
-      <pluginManagement>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.4</version>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-maven-plugin</artifactId>
-            <version>2.5.1</version>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-deploy-plugin</artifactId>
-            <version>2.7</version>
-            <!-- Required by Maven 3+ to deploy artifacts in webdav -->
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav-jackrabbit</artifactId>
-                <version>2.4</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-        </plugins>
-      </pluginManagement>
-
+      <extensions>
+        <extension>
+           <groupId>org.apache.maven.wagon</groupId>
+           <artifactId>wagon-webdav-jackrabbit</artifactId>
+           <version>1.0-beta-7</version>
+         </extension>
+      </extensions>
     </build>
 
     <!-- Deploy releases and snapshots to the CloudBees maven repositories -->
