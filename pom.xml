@@ -25,8 +25,7 @@
         <connection>scm:git:git://github.com/mayocat/payment-gateways.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/mayocat/payment-gateways.git</developerConnection>
         <url>http://github.com/mayocat/payment-gateways</url>
-      <tag>HEAD</tag>
-  </scm>
+    </scm>
 
     <developers>
         <developer>
@@ -65,6 +64,11 @@
             <id>sonatype-nexus-releases</id>
             <name>Sonatype Releases Repository</name>
             <url>http://oss.sonatype.org/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>mayocat-cloudbees-release</id>
+            <name>mayocat-cloudbees-release</name>
+            <url>dav:https://repository-mayocat.forge.cloudbees.com/release/</url>
         </repository>
     </repositories>
 
