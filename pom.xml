@@ -3,7 +3,7 @@
     <groupId>org.mayocat.shop</groupId>
     <artifactId>payment-gateways</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.2</version>
 
     <name>Mayocat Shop - Payment Gateways - Parent POM</name>
     <description>Payment Gateways for the Mayocat Shop platform</description>
@@ -25,7 +25,8 @@
         <connection>scm:git:git://github.com/mayocat/payment-gateways.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/mayocat/payment-gateways.git</developerConnection>
         <url>http://github.com/mayocat/payment-gateways</url>
-    </scm>
+      <tag>payment-gateways-0.2</tag>
+  </scm>
 
     <developers>
         <developer>
