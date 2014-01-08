@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.mayocat.shop</groupId>
         <artifactId>payment-gateways</artifactId>
-        <version>0.3</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>payment-gateway-monetaweb</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -20,6 +20,12 @@
   </scm>
 
     <dependencies>
+        <dependency>
+            <groupId>org.mayocat.platform</groupId>
+            <artifactId>mayocat-platform-context</artifactId>
+            <version>${mayocat.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.mayocat.shop</groupId>
             <artifactId>mayocat-shop-payment-internal</artifactId>

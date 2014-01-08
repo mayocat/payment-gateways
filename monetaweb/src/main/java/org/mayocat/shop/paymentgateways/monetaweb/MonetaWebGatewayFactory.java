@@ -1,24 +1,28 @@
 package org.mayocat.shop.paymentgateways.monetaweb;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.mayocat.accounts.model.Tenant;
+import org.mayocat.configuration.SiteSettings;
+import org.mayocat.configuration.general.FilesSettings;
+import org.mayocat.context.WebContext;
+import org.mayocat.shop.payment.GatewayFactory;
+import org.mayocat.shop.payment.PaymentGateway;
+import org.slf4j.Logger;
+import org.xwiki.component.annotation.Component;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.yammer.dropwizard.json.ObjectMapperFactory;
-
-import org.apache.commons.lang3.StringUtils;
-import org.mayocat.accounts.model.Tenant;
-import org.mayocat.configuration.SiteSettings;
-import org.mayocat.configuration.general.FilesSettings;
-import org.mayocat.context.Execution;
-import org.mayocat.shop.payment.GatewayFactory;
-import org.mayocat.shop.payment.PaymentGateway;
-import org.slf4j.Logger;
-import org.xwiki.component.annotation.Component;
-
-import javax.inject.Inject;
-import java.io.*;
 
 /**
  * @version $Id: da42277c42e6c89a97b7d2ee2c0da91a07df1ffa $
@@ -43,7 +47,7 @@ public class MonetaWebGatewayFactory implements GatewayFactory
     private Logger logger;
 
     @Inject
-    private Execution execution;
+    private WebContext context;
 
     @Inject
     private ObjectMapperFactory objectMapperFactory;
@@ -60,10 +64,13 @@ public class MonetaWebGatewayFactory implements GatewayFactory
     @Override
     public PaymentGateway createGateway()
     {
-        File tenantConfigurationFile =
-                new File(filesSettings.getPermanentDirectory() + SLASH + TENANTS_DIRECTORY + SLASH
-                        + this.execution.getContext().getTenant().getSlug() + SLASH + PAYMENTS_DIRECTORY + SLASH + ID +
-                        SLASH + TENANT_CONFIGURATION_FILENAME);
+        Path permanentDirectory = filesSettings.getPermanentDirectory();
+        File tenantConfigurationFile = permanentDirectory
+                .resolve(TENANTS_DIRECTORY)
+                .resolve(context.getTenant().getSlug())
+                .resolve(PAYMENTS_DIRECTORY)
+                .resolve(ID)
+                .resolve(TENANT_CONFIGURATION_FILENAME).toFile();
 
         ObjectMapper mapper = objectMapperFactory.build(new YAMLFactory());
 
@@ -73,7 +80,7 @@ public class MonetaWebGatewayFactory implements GatewayFactory
             MonetaWebGatewayConfiguration configuration =
                     mapper.readValue(new TreeTraversingParser(node), MonetaWebGatewayConfiguration.class);
 
-            return new MonetaWebPaymentGateway(configuration, getSchemeAndDomain(execution.getContext().getTenant()));
+            return new MonetaWebPaymentGateway(configuration, getSchemeAndDomain(context.getTenant()));
         } catch (FileNotFoundException e) {
             logger.error("Failed to create MonetaWeb Adaptive payment gateway : configuration file not found");
             return null;
