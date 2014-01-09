@@ -51,7 +51,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependencies versions -->
-        <mayocat.version>0.10</mayocat.version>
+        <mayocat.version>0.11-SNAPSHOT</mayocat.version>
     </properties>
 
     <repositories>
