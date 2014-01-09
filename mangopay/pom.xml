@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.mayocat.shop</groupId>
+        <artifactId>payment-gateways</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>payment-gateway-mangopay</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Mayocat Shop - Payment Gateway - Mango Pay</name>
+    <description>Payment gateway for Mango Pay. See http://www.mangopay.com/</description>
+
+    <scm>
+        <connection>scm:git:git://github.com/mayocat/payment-gateways.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/mayocat/payment-gateways.git</developerConnection>
+        <url>http://github.com/mayocat/payment-gateways</url>
+      <tag>HEAD</tag>
+  </scm>
+
+    <dependencies>
+      <!--
+        <dependency>
+            <groupId>org.mayocat.platform</groupId>
+            <artifactId>mayocat-platform-context</artifactId>
+            <version>${mayocat.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mayocat.shop</groupId>
+            <artifactId>mayocat-shop-payment-internal</artifactId>
+            <version>${mayocat.version}</version>
+            <scope>provided</scope>
+        </dependency>
+                -->
+        <dependency>
+            <groupId>org.mayocat.platform</groupId>
+            <artifactId>mayocat-platform-configuration-platform</artifactId>
+            <version>${mayocat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mayocat.shop</groupId>
+            <artifactId>mayocat-shop-payment-api</artifactId>
+            <version>${mayocat.version}</version>
+        </dependency>
+        <!-- Mango pay SDK - there is no public maven artifact yet so we add it as a local library 
+             See https://github.com/MangoPay/mangopay2-java-sdk/issues/1
+             -->
+        <dependency>
+            <groupId>com.mangopay</groupId>
+            <artifactId>mangopay2-java-sdk</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/mangopaysdk.jar</systemPath>
+        </dependency>
+        <!-- Required by mango pay SDK -->
+        <dependency>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+          <version>2.2.4</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+      <extensions>
+        <extension>
+           <groupId>org.apache.maven.wagon</groupId>
+           <artifactId>wagon-webdav-jackrabbit</artifactId>
+           <version>1.0-beta-7</version>
+         </extension>
+      </extensions>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>mayocat-cloudbees-release</id>
+            <name>mayocat-cloudbees-release</name>
+            <url>dav:https://repository-mayocat.forge.cloudbees.com/release/</url>
+        </repository>
+    </repositories>
+
+</project>
