@@ -69,7 +69,7 @@
         <repository>
             <id>mayocat-cloudbees-release</id>
             <name>mayocat-cloudbees-release</name>
-            <url>dav:https://repository-mayocat.forge.cloudbees.com/release/</url>
+            <url>https://repository-mayocat.forge.cloudbees.com/release/</url>
         </repository>
     </repositories>
 
