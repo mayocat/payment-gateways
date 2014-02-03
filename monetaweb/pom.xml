@@ -6,7 +6,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>payment-gateway-monetaweb</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.4</version>
     <packaging>jar</packaging>
 
     <name>Mayocat Shop - Payment Gateway - Moneta Web</name>

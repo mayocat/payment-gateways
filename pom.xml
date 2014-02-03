@@ -25,7 +25,8 @@
         <connection>scm:git:git://github.com/mayocat/payment-gateways.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/mayocat/payment-gateways.git</developerConnection>
         <url>http://github.com/mayocat/payment-gateways</url>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
 
     <developers>
         <developer>
