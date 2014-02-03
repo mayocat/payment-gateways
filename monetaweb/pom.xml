@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.mayocat.shop</groupId>
         <artifactId>payment-gateways</artifactId>
-        <version>0.3</version>
+        <version>0.4</version>
     </parent>
     <artifactId>payment-gateway-monetaweb</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -61,23 +61,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <build>
-      <extensions>
-        <extension>
-           <groupId>org.apache.maven.wagon</groupId>
-           <artifactId>wagon-webdav-jackrabbit</artifactId>
-           <version>1.0-beta-7</version>
-         </extension>
-      </extensions>
-    </build>
-
-    <repositories>
-        <repository>
-            <id>mayocat-cloudbees-release</id>
-            <name>mayocat-cloudbees-release</name>
-            <url>https://repository-mayocat.forge.cloudbees.com/release/</url>
-        </repository>
-    </repositories>
 
 </project>
