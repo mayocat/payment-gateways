@@ -74,13 +74,6 @@
     </repositories>
 
     <build>
-      <extensions>
-        <extension>
-           <groupId>org.apache.maven.wagon</groupId>
-           <artifactId>wagon-webdav-jackrabbit</artifactId>
-           <version>1.0-beta-7</version>
-         </extension>
-      </extensions>
       <pluginManagement>
         <plugins>
           <plugin>
@@ -95,6 +88,19 @@
                 <version>2.4</version>
               </dependency>
             </dependencies>
+          </plugin>
+         <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-release-plugin</artifactId>
+           <version>2.4.2</version>
+           <dependencies>
+              <dependency>
+                 <groupId>org.apache.maven.scm</groupId>
+                 <artifactId>maven-scm-provider-gitexe</artifactId>
+                 <!-- This version is necessary for use with git version 1.8.5 -->
+                 <version>1.8.1</version>
+              </dependency>
+           </dependencies>
           </plugin>
         </plugins>
       </pluginManagement>
