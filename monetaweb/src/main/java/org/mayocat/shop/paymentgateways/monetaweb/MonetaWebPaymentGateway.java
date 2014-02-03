@@ -18,10 +18,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.joda.money.CurrencyUnit;
-import org.mayocat.shop.payment.BaseOption;
+import org.mayocat.shop.payment.BasePaymentData;
 import org.mayocat.shop.payment.GatewayException;
 import org.mayocat.shop.payment.GatewayResponse;
-import org.mayocat.shop.payment.Option;
+import org.mayocat.shop.payment.PaymentData;
 import org.mayocat.shop.payment.PaymentGateway;
 import org.mayocat.shop.payment.api.resources.PaymentResource;
 import org.mayocat.shop.payment.model.PaymentOperation;
@@ -72,23 +72,17 @@ public class MonetaWebPaymentGateway implements PaymentGateway
     }
 
     @Override
-    public GatewayResponse purchase(BigDecimal amount, Map<Option, Object> options) throws GatewayException
+    public GatewayResponse purchase(BigDecimal amount, Map<PaymentData, Object> options) throws GatewayException
     {
-        String baseURI = (String) options.get(BaseOption.BASE_URL);
-        String orderId = options.get(BaseOption.ORDER_ID).toString();
+        String baseURI = (String) options.get(BasePaymentData.BASE_URL);
+        String orderId = options.get(BasePaymentData.ORDER_ID).toString();
 
         String responseUrl =
                 baseURI + PaymentResource.PATH + "/" + orderId + "/" + PaymentResource.ACKNOWLEDGEMENT_PATH + "/" +
                         MonetaWebGatewayFactory.ID;
-        String errorUrl =
-                baseURI + PaymentResource.PATH + "/" + orderId + "/" + PaymentResource.ACKNOWLEDGEMENT_PATH + "/" +
-                        MonetaWebGatewayFactory.ID;
+        String errorUrl = (String) options.get(BasePaymentData.CANCEL_URL);
 
-        Currency currencyCode = ((Currency) options.get(BaseOption.CURRENCY));
-        CurrencyUnit currencyUnit = CurrencyUnit.of(currencyCode);
-        // NOTE:
-        /// When Mayocat minimum JDK version is 1.7, we can use Currency#getNumericCode directly
-        // and get rid of the joda money dependency
+        Currency currency = ((Currency) options.get(BasePaymentData.CURRENCY));
 
         PaymentOperation operation = new PaymentOperation();
         operation.setGatewayId(MonetaWebGatewayFactory.ID);
@@ -99,7 +93,7 @@ public class MonetaWebPaymentGateway implements PaymentGateway
             logger.debug("password : " + password);
             logger.debug("action : " + ACTION_AUTHORIZATION);
             logger.debug("amt : " + amount.setScale(2).toString());
-            logger.debug("currencyCode : " + currencyUnit.getNumeric3Code());
+            logger.debug("currencyCode : " + currency.getNumericCode());
             logger.debug("langId : " + languageId);
             logger.debug("responseUrl : " + responseUrl);
             logger.debug("errorUrl : " + errorUrl);
@@ -112,7 +106,7 @@ public class MonetaWebPaymentGateway implements PaymentGateway
         nvps.add(new BasicNameValuePair("password", password));
         nvps.add(new BasicNameValuePair("action", ACTION_AUTHORIZATION));
         nvps.add(new BasicNameValuePair("amt", amount.setScale(2).toString()));
-        nvps.add(new BasicNameValuePair("currencycode", currencyUnit.getNumeric3Code()));
+        nvps.add(new BasicNameValuePair("currencycode", String.valueOf(currency.getNumericCode())));
         nvps.add(new BasicNameValuePair("langid", languageId)); // TODO get language from option locale
         nvps.add(new BasicNameValuePair("responseurl", responseUrl));
         nvps.add(new BasicNameValuePair("errorurl", errorUrl));   // TODO
@@ -185,7 +179,7 @@ public class MonetaWebPaymentGateway implements PaymentGateway
         } else {
             operation.setResult(PaymentOperation.Result.FAILED);
             response = new GatewayResponse(false, operation);
-            response.setResponseText(baseURL + "/checkout/cancelled");
+            response.setResponseText(baseURL + "/checkout/error");
         }
 
         return response;

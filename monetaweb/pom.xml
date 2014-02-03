@@ -12,12 +12,16 @@
     <name>Mayocat Shop - Payment Gateway - Moneta Web</name>
     <description>Payment gateway for Moneta Web. See http://www.intesasanpaolo.com/incassi-pagamenti-italia/moneta-web.jsp</description>
 
+    <properties>
+        <mayocat.version>0.11-SNAPSHOT</mayocat.version>
+    </properties>
+
     <scm>
         <connection>scm:git:git://github.com/mayocat/payment-gateways.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/mayocat/payment-gateways.git</developerConnection>
         <url>http://github.com/mayocat/payment-gateways</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -36,11 +40,13 @@
             <groupId>org.mayocat.platform</groupId>
             <artifactId>mayocat-platform-configuration-platform</artifactId>
             <version>${mayocat.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mayocat.shop</groupId>
             <artifactId>mayocat-shop-payment-api</artifactId>
             <version>${mayocat.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
