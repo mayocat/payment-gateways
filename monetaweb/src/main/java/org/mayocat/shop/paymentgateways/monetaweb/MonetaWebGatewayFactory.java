@@ -80,7 +80,12 @@ public class MonetaWebGatewayFactory implements GatewayFactory
             MonetaWebGatewayConfiguration configuration =
                     mapper.readValue(new TreeTraversingParser(node), MonetaWebGatewayConfiguration.class);
 
-            return new MonetaWebPaymentGateway(configuration, getSchemeAndDomain(context.getTenant()));
+            String baseUri = getSchemeAndDomain(context.getTenant());
+            if (context.isAlternativeLocale()) {
+                baseUri += (context.getLocale() + SLASH);
+            }
+
+            return new MonetaWebPaymentGateway(configuration, baseUri);
         } catch (FileNotFoundException e) {
             logger.error("Failed to create MonetaWeb Adaptive payment gateway : configuration file not found");
             return null;
