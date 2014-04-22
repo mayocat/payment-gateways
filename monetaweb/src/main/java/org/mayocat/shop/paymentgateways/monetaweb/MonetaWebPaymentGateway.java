@@ -8,6 +8,7 @@ import java.util.Currency;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -159,7 +160,7 @@ public class MonetaWebPaymentGateway implements PaymentGateway
         }
     }
 
-    public GatewayResponse acknowledge(Map<String, List<String>> data) throws GatewayException
+    public GatewayResponse acknowledge(UUID orderId, Map<String, List<String>> data) throws GatewayException
     {
         Preconditions.checkElementIndex(0, data.get("result").size());
         Preconditions.checkElementIndex(0, data.get("paymentid").size());
@@ -175,7 +176,7 @@ public class MonetaWebPaymentGateway implements PaymentGateway
             operation.setResult(PaymentOperation.Result.CAPTURED);
             operation.setExternalId(externalId);
             response = new GatewayResponse(true, operation);
-            response.setResponseText(baseURL + "/checkout/return");
+            response.setResponseText(baseURL + "/checkout/return/" + orderId.toString());
         } else {
             operation.setResult(PaymentOperation.Result.FAILED);
             response = new GatewayResponse(false, operation);

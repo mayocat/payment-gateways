@@ -13,7 +13,7 @@
     <description>Payment gateway for Moneta Web. See http://www.intesasanpaolo.com/incassi-pagamenti-italia/moneta-web.jsp</description>
 
     <properties>
-        <mayocat.version>0.11.0</mayocat.version>
+        <mayocat.version>0.20.0</mayocat.version>
     </properties>
 
     <scm>

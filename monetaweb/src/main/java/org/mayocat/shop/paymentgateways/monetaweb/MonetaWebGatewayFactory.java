@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.mayocat.accounts.model.Tenant;
+import org.mayocat.configuration.MultitenancySettings;
 import org.mayocat.configuration.SiteSettings;
 import org.mayocat.configuration.general.FilesSettings;
 import org.mayocat.context.WebContext;
@@ -42,6 +43,9 @@ public class MonetaWebGatewayFactory implements GatewayFactory
 
     @Inject
     private FilesSettings filesSettings;
+
+    @Inject
+    private MultitenancySettings multitenancySettings;
 
     @Inject
     private Logger logger;
@@ -82,7 +86,7 @@ public class MonetaWebGatewayFactory implements GatewayFactory
 
             String baseUri = getSchemeAndDomain(context.getTenant());
             if (context.isAlternativeLocale()) {
-                baseUri += (context.getLocale() + SLASH);
+                baseUri += (SLASH + context.getLocale());
             }
 
             return new MonetaWebPaymentGateway(configuration, baseUri);
@@ -105,8 +109,12 @@ public class MonetaWebGatewayFactory implements GatewayFactory
 
     protected String getDomain(Tenant tenant)
     {
-        return StringUtils
-                .defaultIfBlank(tenant.getDefaultHost(), tenant.getSlug() + "." + siteSettings.getDomainName());
+        if (multitenancySettings.isActivated()) {
+            return StringUtils
+                    .defaultIfBlank(tenant.getDefaultHost(), tenant.getSlug() + "." + siteSettings.getDomainName());
+        } else {
+            return siteSettings.getDomainName();
+        }
     }
 
 }
