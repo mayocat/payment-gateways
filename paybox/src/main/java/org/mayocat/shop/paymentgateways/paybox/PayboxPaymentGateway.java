@@ -139,21 +139,6 @@ public class PayboxPaymentGateway implements PaymentGateway
         return response;
     }
 
-    private String computeHMAC(String input) {
-        Mac mac = null;
-        SecretKeySpec secretKey = new SecretKeySpec(DatatypeConverter.parseHexBinary(this.configuration.getSecret()), "HmacSHA512");
-        try {
-            mac = Mac.getInstance("HmacSHA512");
-            mac.init(secretKey);
-            final byte[] macData = mac.doFinal(input.getBytes());
-            byte[] hex = new Hex().encode(macData);
-            return new String(hex, "UTF-8").toUpperCase();
-        } catch (NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException e) {
-            throw new RuntimeException("Failed to compute HMAC", e);
-        }
-    }
-
-
     @Override
     public GatewayResponse acknowledge(UUID orderId, final Map<String, List<String>> data) throws GatewayException {
         this.logger.info("Acknowledge paybox payment!");
@@ -216,6 +201,20 @@ public class PayboxPaymentGateway implements PaymentGateway
     }
 
     // ---------------------------------------------------------------------------------------------
+
+    private String computeHMAC(String input) {
+        Mac mac = null;
+        SecretKeySpec secretKey = new SecretKeySpec(DatatypeConverter.parseHexBinary(this.configuration.getSecret()), "HmacSHA512");
+        try {
+            mac = Mac.getInstance("HmacSHA512");
+            mac.init(secretKey);
+            final byte[] macData = mac.doFinal(input.getBytes());
+            byte[] hex = new Hex().encode(macData);
+            return new String(hex, "UTF-8").toUpperCase();
+        } catch (NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException e) {
+            throw new RuntimeException("Failed to compute HMAC", e);
+        }
+    }
 
     private boolean verifySignature(String message, String signatureText) {
         final Signature signature;
