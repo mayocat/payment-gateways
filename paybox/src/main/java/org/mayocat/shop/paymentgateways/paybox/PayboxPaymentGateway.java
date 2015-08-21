@@ -106,9 +106,18 @@ public class PayboxPaymentGateway implements PaymentGateway
         paymentData.put("PBX_RETOUR", returnParams + ";signature:K");
 
         // Success (return), cancel & IPN URL
-        paymentData.put("PBX_EFFECTUE", options.get(BasePaymentData.RETURN_URL));
-        paymentData.put("PBX_ANNULE", options.get(BasePaymentData.CANCEL_URL));
         paymentData.put("PBX_REPONDRE_A", options.get(BasePaymentData.IPN_URL));
+        if (configuration.getReturnUrl().isPresent()) {
+            paymentData.put("PBX_EFFECTUE", configuration.getReturnUrl().get());
+        } else {
+            paymentData.put("PBX_EFFECTUE", options.get(BasePaymentData.RETURN_URL));
+        }
+        if (configuration.getCancelUrl().isPresent()) {
+            paymentData.put("PBX_ANNULE", configuration.getCancelUrl().get());
+        } else {
+            paymentData.put("PBX_ANNULE", options.get(BasePaymentData.CANCEL_URL));
+        }
+
 
         // Failed (refused) URL
         // paymentData.put("PBX_REFUSE", "");

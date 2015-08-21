@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TreeTraversingParser;
+import com.google.common.base.Optional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,22 +37,27 @@ public class PayboxGatewayFactory extends AbstractGatewayFactory implements Gate
     @Override
     public PaymentGateway createGateway() {
 
+        Optional<File> tenantConfigurationFile = getTenantConfigurationFile("configuration.yml");
+        if (!tenantConfigurationFile.isPresent()) {
+            logger.error("Failed to create Paybox payment gateway : no tenant configuration found");
+            return null;
+        }
+
         try {
-            File tenantConfigurationFile = getTenantConfigurationFile("configuration.yml");
-            JsonNode node = mapper.readTree(tenantConfigurationFile);
+            JsonNode node = mapper.readTree(tenantConfigurationFile.get());
             PayboxTenantConfiguration configuration =
                     mapper.readValue(new TreeTraversingParser(node), PayboxTenantConfiguration.class);
 
             return new PayboxPaymentGateway(configuration);
 
         } catch (FileNotFoundException e) {
-            logger.error("Failed to create Paypal Adaptive payment gateway : configuration file not found");
+            logger.error("Failed to create Paybox payment gateway : configuration file not found");
             return null;
         } catch (JsonProcessingException e) {
-            logger.error("Failed to create Paypal Adaptive payment gateway : invalid configuration file");
+            logger.error("Failed to create Paybox payment gateway : invalid configuration file");
             return null;
         } catch (IOException e) {
-            logger.error("Failed to create Paypal Adaptive payment gateway : IO exception");
+            logger.error("Failed to create Paybox payment gateway : IO exception");
             return null;
         }
     }
