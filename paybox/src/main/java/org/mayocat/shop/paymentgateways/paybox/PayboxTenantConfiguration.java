@@ -7,6 +7,8 @@ import com.google.common.base.Optional;
  */
 public class PayboxTenantConfiguration
 {
+    private String mode = "development";
+
     private String site;
 
     private String rang;
@@ -41,5 +43,9 @@ public class PayboxTenantConfiguration
 
     public Optional<String> getCancelUrl() {
         return cancelUrl;
+    }
+
+    public String getMode() {
+        return mode;
     }
 }

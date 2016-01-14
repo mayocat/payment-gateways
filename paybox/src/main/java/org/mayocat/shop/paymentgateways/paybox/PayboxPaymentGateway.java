@@ -143,7 +143,12 @@ public class PayboxPaymentGateway implements PaymentGateway
 
         GatewayResponse response = new GatewayResponse(true, paymentOperation);
         response.setData(paymentData);
-        response.setFormURL("https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi");
+
+        if (configuration.getMode().equalsIgnoreCase("production")) {
+            response.setFormURL("https://tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi");
+        } else {
+            response.setFormURL("https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi");
+        }
 
         return response;
     }
